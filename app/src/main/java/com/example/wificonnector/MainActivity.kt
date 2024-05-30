@@ -10,6 +10,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -41,14 +42,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         val Camera: Button = findViewById(R.id.Camera)
+        val PIC: Button = findViewById(R.id.PIC)
 
         Camera.setOnClickListener {
             if (permissionCamera()) {
-                getPicture()
+                getFromCamera()
             }
         }
 
+        PIC.setOnClickListener {
 
+        }
     }
 
     private fun permissionCamera(): Boolean {
@@ -74,7 +78,7 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    private fun getPicture() {
+    private fun getFromCamera() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             takePictureIntent.resolveActivity(packageManager)?.also {
                 val photoFile: File? = try {
@@ -105,6 +109,14 @@ class MainActivity : AppCompatActivity() {
             storageDir
         ).apply {
             currentPhotoPath = absolutePath
+            crop(currentPhotoPath)
         }
+    }
+
+    private fun crop(image: String) {
+        val intent = Intent(this, CropActivity::class.java).apply {
+            putExtra("image_path", image)
+        }
+        startActivity(intent)
     }
 }
