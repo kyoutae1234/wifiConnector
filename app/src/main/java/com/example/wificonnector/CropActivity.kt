@@ -16,6 +16,7 @@ import com.example.wificonnector.R.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -47,7 +48,7 @@ class CropActivity : AppCompatActivity() {
         applyBtn.setOnClickListener {
             val progressBar = findViewById<ProgressBar>(R.id.progressBar)
             progressBar.visibility = View.VISIBLE
-            progressBar.bringToFront()
+            cropImageView.visibility = View.INVISIBLE
             val cropping = CoroutineScope(Dispatchers.IO).launch {
                 val cropped = cropImageView.getCroppedImage()
                 saveCropped(cropped)
@@ -60,6 +61,11 @@ class CropActivity : AppCompatActivity() {
         cancelBtn.setOnClickListener {
             finish()
         }
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        cropImageView.visibility = View.VISIBLE
     }
 
     private fun saveCropped(cropped: Bitmap?) {
