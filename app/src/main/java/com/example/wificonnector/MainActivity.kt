@@ -31,8 +31,16 @@ val TAG = "wifi"
 
 class MainActivity : AppCompatActivity() {
 
-    private val REQUEST_IMAGE_CAPTURE = 1
     private val REQUEST_PERMISSION = 100
+
+    private lateinit var imagePath : String
+    private val cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+        if (success) {
+            crop(imagePath)
+        } else {
+            File(imagePath).delete()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,22 +85,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getFromCamera() {
+        lateinit var photoURI : Uri
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             takePictureIntent.resolveActivity(packageManager)?.also {
                 val photoFile: File? = try {
                     createImageFile()
-                } catch (ex: IOException) {
+                } catch (e: IOException) {
                     null
                 }
                 photoFile?.also {
-                    val photoURI: Uri = FileProvider.getUriForFile(
+                    photoURI = FileProvider.getUriForFile(
                         this,
                         "com.example.wificonnector.fileprovider",
                         it
                     )
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
                 }
+                cameraLauncher.launch(photoURI)
             }
         }
     }
@@ -106,7 +115,7 @@ class MainActivity : AppCompatActivity() {
             ".jpg",
             storageDir
         ).apply {
-            crop(absolutePath)
+            imagePath = absolutePath
         }
     }
 
