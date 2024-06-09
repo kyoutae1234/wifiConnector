@@ -6,7 +6,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
+import android.view.View
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.canhub.cropper.CropImageView
@@ -26,6 +28,7 @@ class CropActivity : AppCompatActivity() {
     lateinit var applyBtn: Button
 
     lateinit var image: File
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(layout.activity_crop)
@@ -38,19 +41,19 @@ class CropActivity : AppCompatActivity() {
 
         if (imagePath != null) {
             image = File(imagePath)
-            Log.d(TAG, "onCreate: $imagePath")
-            if (!image.exists()) {
-                Toast.makeText(this, "이미지가 선택되지 않았습니다!", Toast.LENGTH_SHORT).show()
-                finish()
-            }
-            Log.d(TAG, "onCreate: FileCheck: ${image.exists()}")
             cropImageView.setImageUriAsync(Uri.fromFile(image))
         }
 
         applyBtn.setOnClickListener {
-            CoroutineScope(Dispatchers.Main).launch {
+            val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+            progressBar.visibility = View.VISIBLE
+            progressBar.bringToFront()
+            val cropping = CoroutineScope(Dispatchers.Main).launch {
                 val cropped = cropImageView.getCroppedImage()
                 saveCropped(cropped)
+            }
+            cropping.invokeOnCompletion {
+                progressBar.visibility = View.INVISIBLE
             }
         }
 
