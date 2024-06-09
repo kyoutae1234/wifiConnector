@@ -1,17 +1,21 @@
 package com.example.wificonnector
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -29,7 +33,6 @@ class MainActivity : AppCompatActivity() {
 
     private val REQUEST_IMAGE_CAPTURE = 1
     private val REQUEST_PERMISSION = 100
-    private lateinit var currentPhotoPath: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,16 +45,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         val Camera: Button = findViewById(R.id.Camera)
-        val PIC: Button = findViewById(R.id.PIC)
 
         Camera.setOnClickListener {
             if (permissionCamera()) {
                 getFromCamera()
             }
-        }
-
-        PIC.setOnClickListener {
-
         }
     }
 
@@ -108,8 +106,7 @@ class MainActivity : AppCompatActivity() {
             ".jpg",
             storageDir
         ).apply {
-            currentPhotoPath = absolutePath
-            crop(currentPhotoPath)
+            crop(absolutePath)
         }
     }
 

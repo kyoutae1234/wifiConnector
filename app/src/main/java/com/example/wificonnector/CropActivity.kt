@@ -38,6 +38,12 @@ class CropActivity : AppCompatActivity() {
 
         if (imagePath != null) {
             image = File(imagePath)
+            Log.d(TAG, "onCreate: $imagePath")
+            if (!image.exists()) {
+                Toast.makeText(this, "이미지가 선택되지 않았습니다!", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            Log.d(TAG, "onCreate: FileCheck: ${image.exists()}")
             cropImageView.setImageUriAsync(Uri.fromFile(image))
         }
 

@@ -15,6 +15,8 @@ class ConnectActivity : AppCompatActivity() {
         setContentView(R.layout.activity_connect)
         val imagePath = intent.getStringExtra("image_path")
 
+        Log.d(TAG, "onCreate: received: $imagePath")
+
         if (imagePath != null) {
             image = File(imagePath)
 
