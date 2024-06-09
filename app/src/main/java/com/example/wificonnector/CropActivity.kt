@@ -48,7 +48,7 @@ class CropActivity : AppCompatActivity() {
             val progressBar = findViewById<ProgressBar>(R.id.progressBar)
             progressBar.visibility = View.VISIBLE
             progressBar.bringToFront()
-            val cropping = CoroutineScope(Dispatchers.Main).launch {
+            val cropping = CoroutineScope(Dispatchers.IO).launch {
                 val cropped = cropImageView.getCroppedImage()
                 saveCropped(cropped)
             }
