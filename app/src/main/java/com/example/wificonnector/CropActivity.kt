@@ -23,6 +23,8 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 
+const val PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1
+
 class CropActivity : AppCompatActivity() {
     lateinit var cropImageView: CropImageView
     lateinit var cancelBtn: Button
